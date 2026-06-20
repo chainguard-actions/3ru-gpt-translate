@@ -1,0 +1,29 @@
+name: Test with prompt input
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: workflow_dispatch
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - id: action
+        uses: .
+        with:
+          apikey: fake-api-key-not-used
+          prompt: 'Translate the following markdown content accurately.'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+        continue-on-error: true
+      - name: Assert action succeeded with prompt input (no files = skip)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected action to succeed when no inputFiles are specified (even with prompt set)"
+            exit 1
+          fi
+          echo "PASS"

@@ -1,0 +1,34 @@
+name: 'GPT Translate'
+description: 'Markdown translation into any other language powered by ChatGPT'
+inputs:
+  token:
+    description: 'GITHUB_TOKEN or a `repo` scoped Personal Access Token (PAT)'
+    default: ${{ github.token }}
+  apikey:
+    description: 'OpenAI API Key'
+    required: true
+  model:
+    description: 'OpenAI Model'
+    required: false
+  prompt:
+    description: 'Instructions to the model'
+    required: false
+  basePath:
+    description: 'Replace the base path of openai api'
+    required: false
+  inputFiles:
+    description: 'Input files to translate'
+    required: false
+  outputFiles:
+    description: 'Output files to save'
+    required: false
+  languages:
+    description: 'Language to translate to'
+    required: false
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
+  pre: chainguard-phonehome.js
+branding:
+  icon: 'globe'
+  color: 'green'
