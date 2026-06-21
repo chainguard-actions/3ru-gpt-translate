@@ -12,6 +12,7 @@ Hardened by [Chainguard](https://www.chainguard.dev) from the upstream action at
 | v1.1.12 | [`v1.1.12`](https://github.com/chainguard-actions/3ru-gpt-translate/tree/v1.1.12) | [`16919c9`](https://github.com/3ru/gpt-translate/commit/16919c9598935910a4c569613e0c993c60df1001) |
 | v1.2.0-beta | [`v1.2.0-beta`](https://github.com/chainguard-actions/3ru-gpt-translate/tree/v1.2.0-beta) | [`b8ddfab`](https://github.com/3ru/gpt-translate/commit/b8ddfab17c3ad47b59ebe1906724dddfe460c304) |
 | v1.2.1 | [`v1.2.1`](https://github.com/chainguard-actions/3ru-gpt-translate/tree/v1.2.1) | [`b14c7db`](https://github.com/3ru/gpt-translate/commit/b14c7db974404875bec3f12ca07792cb1d8c2615) |
+| v1.2.2 | [`v1.2.2`](https://github.com/chainguard-actions/3ru-gpt-translate/tree/v1.2.2) | [`6f81acc`](https://github.com/3ru/gpt-translate/commit/6f81acc9116f18f15c4529dee2f58c5fb5fcbb8d) |
 
 ## Privacy
 
