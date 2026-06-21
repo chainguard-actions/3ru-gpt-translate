@@ -1,0 +1,31 @@
+name: Test - Missing Output Parameters
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run GPT Translate with inputFiles but missing outputFiles and languages
+        id: action
+        # When inputFiles is provided but outputFiles or languages are missing,
+        # the action should fail with an error about required parameters.
+        uses: .
+        with:
+          token: 'fake-token'
+          apikey: 'fake-api-key'
+          inputFiles: 'README.md'
+        continue-on-error: true
+
+      - name: Assert action failed due to missing parameters
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail when inputFiles provided but outputFiles/languages missing, got: $OUTCOME"
+            exit 1
+          fi
+          echo "PASS: action correctly failed when required parameters are missing"
