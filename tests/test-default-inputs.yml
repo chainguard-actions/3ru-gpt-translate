@@ -1,0 +1,32 @@
+name: Test default inputs and provider selection
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: workflow_dispatch
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Run action with default inputs (no files, custom provider)
+        id: action
+        uses: .
+        with:
+          apikey: dummy-key
+          provider: openai
+          model: gpt-4o
+          temperature: '0.5'
+          top_p: '0.7'
+          presence_penalty: '0'
+          frequency_penalty: '0'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+        # With no inputFiles, the action should skip translation and exit 0
+
+      - name: Assert action completed successfully with default inputs
+        run: |
+          echo "Action completed successfully with custom provider/model inputs and no files."
+          echo "PASS"
