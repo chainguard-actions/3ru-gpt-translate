@@ -1,0 +1,32 @@
+name: Test error when inputFiles provided but outputFiles and languages missing
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: workflow_dispatch
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Create a dummy markdown file to translate
+        run: |
+          echo "# Hello World" > README.test.md
+      - name: Run action with inputFiles but no outputFiles or languages
+        id: action
+        uses: .
+        with:
+          apikey: 'dummy-api-key-not-used'
+          inputFiles: 'README.test.md'
+          outputFiles: ''
+          languages: ''
+        continue-on-error: true
+      - name: Assert action failed due to missing outputFiles and languages
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail when outputFiles and languages are missing, but got outcome=$OUTCOME"
+            exit 1
+          fi
+          echo "PASS: action correctly failed when outputFiles and languages are missing"

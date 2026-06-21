@@ -1,0 +1,26 @@
+name: Test optional parameters (basePath, max_tokens, seed, systemPrompt)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: workflow_dispatch
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run action with optional parameters and no inputFiles
+        id: action
+        uses: .
+        with:
+          apikey: 'dummy-api-key-not-used'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+          basePath: 'https://api.openai.com/v1'
+          max_tokens: '1024'
+          seed: '42'
+          systemPrompt: 'You are a professional translator.'
+      - name: Assert action completed successfully
+        run: |
+          echo "Action completed without error when no inputFiles specified (with optional params)"
+          echo "PASS"

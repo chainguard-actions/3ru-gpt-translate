@@ -1,0 +1,22 @@
+name: Test no input files (skip translation)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_EVENT_NAME: workflow_dispatch
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - name: Run action with no inputFiles
+        id: action
+        uses: .
+        with:
+          apikey: 'dummy-api-key-not-used'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+      - name: Assert action completed successfully
+        run: |
+          echo "Action completed without error when no inputFiles specified"
+          echo "PASS"
