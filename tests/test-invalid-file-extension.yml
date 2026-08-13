@@ -1,28 +1,31 @@
-name: Test invalid file extension error
+name: Test invalid file extension validation
 on:
   workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_EVENT_NAME: workflow_dispatch
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
-      - id: action
+
+      - name: Run action with invalid file extension
+        id: action
+        # .txt is not in availableFileExtensions (.md, .mdx, .json), so the action
+        # should throw "Invalid input. Please check the inputFiles and outputFiles parameters"
         uses: .
         with:
-          apikey: fake-api-key-not-used
-          inputFiles: 'README.exe'
-          outputFiles: 'README.ja.exe'
+          apikey: dummy-key-not-used
+          inputFiles: 'README.txt'
+          outputFiles: 'README.{ja}.txt'
           languages: 'Japanese'
         continue-on-error: true
-      - name: Assert action failed with invalid extension error
+
+      - name: Assert action failed due to invalid extension
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
           if [ "$OUTCOME" != "failure" ]; then
-            echo "FAIL: expected action to fail when inputFiles has an invalid file extension"
+            echo "FAIL: expected action to fail for invalid file extension, got: $OUTCOME"
             exit 1
           fi
-          echo "PASS"
+          echo "PASS: action correctly rejected invalid file extension"
