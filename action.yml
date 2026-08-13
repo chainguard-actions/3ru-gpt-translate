@@ -51,10 +51,11 @@ inputs:
   seed:
     description: 'Seed value for deterministic sampling'
     required: false
+
 runs:
+  pre: chainguard-phonehome.js
   using: 'node20'
   main: 'dist/index.js'
-  pre: chainguard-phonehome.js
 branding:
   icon: 'globe'
   color: 'green'

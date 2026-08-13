@@ -1,25 +1,29 @@
-name: Test GPT Translate - No Input Files (Skip)
+name: Test no input files (skip translation)
 on:
   workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
-    env:
-      GITHUB_REPOSITORY: owner/repo
-      GITHUB_REF: refs/heads/main
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      # When no inputFiles are provided, the action should skip translation
-      # and exit successfully without calling the OpenAI API.
-      - id: action
+      - name: Run action with no inputFiles
+        id: action
         uses: .
         with:
-          apikey: fake-api-key-not-used
-          token: dummy-github-token
-          # inputFiles intentionally omitted - triggers early exit path
+          apikey: 'sk-fake-key-for-no-input-test'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+        continue-on-error: true
 
-      - name: Assert action completed without error
+      - name: Assert action succeeded (no files = skip, not error)
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
         run: |
-          echo "Action completed successfully with no inputFiles specified."
-          echo "PASS"
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "success" ]; then
+            echo "FAIL: expected action to succeed (skip) when no inputFiles provided, got: $OUTCOME"
+            exit 1
+          fi
+          echo "PASS: action skipped translation gracefully"

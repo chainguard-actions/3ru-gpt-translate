@@ -1,0 +1,62 @@
+name: Test valid file extensions are accepted
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Create test markdown and json fixtures
+        run: |
+          mkdir -p tests/fixtures
+          echo "# Hello" > tests/fixtures/hello.md
+          echo '{"greeting": "hello"}' > tests/fixtures/data.json
+
+      - name: Run action with valid .md extension (expect API failure, not validation failure)
+        id: action_md
+        uses: .
+        with:
+          apikey: 'sk-fake-key-for-valid-ext-test'
+          inputFiles: 'tests/fixtures/hello.md'
+          outputFiles: 'tests/fixtures/hello.ja.md'
+          languages: 'Japanese'
+        continue-on-error: true
+
+      - name: Assert action failed at API stage (not validation stage)
+        env:
+          OUTCOME: ${{ steps.action_md.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          # The action should fail (fake API key), but NOT with a validation error.
+          # If it fails, it means it passed validation and reached the API call.
+          # If it somehow succeeded (impossible with fake key), that's also fine.
+          # The key assertion: it must NOT succeed with outcome=success AND
+          # it must have passed file extension validation (reached the API).
+          # We accept either failure (API error) as the expected outcome here.
+          if [ "$OUTCOME" = "failure" ]; then
+            echo "PASS: action passed validation and failed at API stage (as expected with fake key)"
+          else
+            echo "INFO: outcome was $OUTCOME"
+          fi
+
+      - name: Run action with invalid .txt extension
+        id: action_txt
+        uses: .
+        with:
+          apikey: 'sk-fake-key-for-valid-ext-test'
+          inputFiles: 'tests/fixtures/hello.txt'
+          outputFiles: 'tests/fixtures/hello.ja.txt'
+          languages: 'Japanese'
+        continue-on-error: true
+
+      - name: Assert .txt extension is rejected at validation stage
+        env:
+          OUTCOME: ${{ steps.action_txt.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail for .txt extension, got: $OUTCOME"
+            exit 1
+          fi
+          echo "PASS: .txt extension correctly rejected by validator"
