@@ -1,0 +1,22 @@
+name: Test no input files (skip translation)
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # When inputFiles is empty, the action should log "No input files specified. Skip translation."
+      # and exit 0 without making any API calls.
+      - id: action
+        uses: .
+        with:
+          apikey: 'dummy-key-not-used-when-no-input-files'
+          inputFiles: ''
+          outputFiles: ''
+          languages: ''
+
+      - name: Assert action completed without error
+        run: |
+          echo "PASS: action completed successfully with no input files"

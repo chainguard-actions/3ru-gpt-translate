@@ -1,0 +1,24 @@
+# .github/workflows/gpt-translate.yml
+name: GPT Translate
+
+on:
+  issue_comment:
+    types: [ created ]
+
+permissions:
+  contents: read
+
+jobs:
+  gpt_translate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@a37ce9120846195fa4ece8f58b268e6043cb2f26 # v3
+
+      - name: Run GPT Translate
+        if: |
+          contains(github.event.comment.body, '/gt')
+        uses: 3ru/gpt-translate@d36d569b15411b6e6f727b99c051c443b1b02458 # master
+        with:
+          apikey: ${{ secrets.OPENAI_API_KEY }}
+          model: "gpt-4o"

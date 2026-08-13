@@ -1,33 +1,31 @@
-name: Test - Invalid File Extension
+name: Test invalid file extension validation
 on:
   workflow_dispatch:
-
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - name: Run GPT Translate with invalid file extension
-        id: action
-        # The action only supports .md, .mdx, and .json files.
-        # Providing a .txt file should cause a validation error.
+      # The action validates file extensions — only .md, .mdx, .json are supported.
+      # Providing an unsupported extension (.txt) should cause the action to fail
+      # with a validation error before any API call is made.
+      - id: action
         uses: .
         with:
-          token: 'fake-token'
-          apikey: 'fake-api-key'
+          apikey: 'dummy-key-not-used-during-validation'
           inputFiles: 'README.txt'
           outputFiles: 'README.ja.txt'
           languages: 'Japanese'
         continue-on-error: true
 
-      - name: Assert action failed with validation error
+      - name: Assert action failed due to invalid file extension
         env:
           OUTCOME: ${{ steps.action.outcome }}
         run: |
           echo "outcome: $OUTCOME"
           if [ "$OUTCOME" != "failure" ]; then
-            echo "FAIL: expected action to fail for invalid file extension (.txt), got: $OUTCOME"
+            echo "FAIL: expected action to fail with invalid file extension, but got: $OUTCOME"
             exit 1
           fi
-          echo "PASS: action correctly rejected invalid file extension"
+          echo "PASS: action correctly failed for unsupported file extension"

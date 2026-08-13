@@ -1,0 +1,36 @@
+name: Test outputFiles and languages length mismatch
+on:
+  workflow_dispatch:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      # Create a small markdown file
+      - name: Create input markdown file
+        run: |
+          echo "# Hello World" > "$GITHUB_WORKSPACE/test-input.md"
+
+      # When outputFiles has 2 entries but languages has only 1,
+      # the action should fail with:
+      # "Error: outputFiles and language must be same length."
+      - id: action
+        uses: .
+        with:
+          apikey: 'dummy-key-not-used'
+          inputFiles: 'test-input.md'
+          outputFiles: 'test-input.{ja}.md test-input.{fr}.md'
+          languages: 'Japanese'
+        continue-on-error: true
+
+      - name: Assert action failed due to length mismatch
+        env:
+          OUTCOME: ${{ steps.action.outcome }}
+        run: |
+          echo "outcome: $OUTCOME"
+          if [ "$OUTCOME" != "failure" ]; then
+            echo "FAIL: expected action to fail when outputFiles and languages have different lengths, but got: $OUTCOME"
+            exit 1
+          fi
+          echo "PASS: action correctly failed when outputFiles and languages lengths do not match"
