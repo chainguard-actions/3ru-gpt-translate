@@ -4,8 +4,13 @@
   "version": "v1.2.1",
   "commit_sha": "b14c7db974404875bec3f12ca07792cb1d8c2615",
   "url": "https://github.com/3ru/gpt-translate",
-  "policy_sha": "d636be7e43ef829af6e853da6b3c7566db9f72fe",
+  "policy_sha": "374911c4be584df24e6da57af2d990570ef0f859",
   "test_policy_sha": "843adf9e4b8f85d0c08b27b9d0b09dd094b54702",
   "test_agent_version": "2",
-  "harden_agent_version": "2"
+  "harden_agent_version": "2",
+  "dist_artifact": {
+    "gcs_uri": "gs://patch-actions-node-artifacts/dist-artifacts/3ru/gpt-translate/v1.2.1/sha256-2420e98f3be1948079a670f96992ad36af5d346c4cdfaa761694940197bc5b79.tar.gz",
+    "sha256": "2420e98f3be1948079a670f96992ad36af5d346c4cdfaa761694940197bc5b79",
+    "size_bytes": 1016163
+  }
 }
